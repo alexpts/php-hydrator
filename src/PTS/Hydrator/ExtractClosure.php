@@ -43,7 +43,7 @@ class ExtractClosure
          * @throws ExtractorException
          */
         return function($getter) {
-            [$method, $args] = is_array($getter)
+            list($method, $args) = is_array($getter)
                 ? [$getter[0], $getter[1]]
                 : [$getter, []];
 
