@@ -43,15 +43,15 @@ class ExtractClosure
          * @throws ExtractorException
          */
         return function($getter) {
-            list($method, $args) = is_array($getter)
+            list($action, $params) = is_array($getter)
                 ? [$getter[0], $getter[1]]
                 : [$getter, []];
 
-            if (!is_callable([$this, $method])) {
+            if (!is_callable([$this, $action])) {
                 throw new ExtractorException('Getter key is not callable');
             }
 
-            return call_user_func_array([$this, $method], $args);
+            return call_user_func_array([$this, $action], $params);
         };
     }
 }
