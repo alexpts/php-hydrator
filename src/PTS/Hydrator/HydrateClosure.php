@@ -45,7 +45,7 @@ class HydrateClosure
          * @throws HydratorException
          */
         return function($setter, $value) {
-            [$method, $args] = is_array($setter)
+            list($method, $args) = is_array($setter)
                 ? [$setter[0], $setter[1]]
                 : [$setter, []];
 
