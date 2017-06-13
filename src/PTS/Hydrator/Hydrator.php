@@ -46,21 +46,35 @@ class Hydrator
     }
 
     /**
-     * @param mixed $val
+     * @param mixed $value
      * @param array $pipes
      * @return mixed
      */
-    protected function hydratePipe($val, array $pipes)
+    protected function hydratePipe($value, array $pipes)
     {
         foreach ($pipes as $filter) {
-            if (is_callable($filter)) {
-                $val = $filter($val);
-            } else if (is_array($filter) && array_key_exists('hydrate', $filter)) {
-                $val = $filter['hydrate']($val);
-            }
+            $value = $this->applyFilter($value, $filter);
         }
 
-        return $val;
+        return $value;
+    }
+
+    /**
+     * @param mixed $value
+     * @param callable|array $filter
+     * @return mixed
+     */
+    protected function applyFilter($value, $filter)
+    {
+        if (is_callable($filter)) {
+            return $filter($value);
+        }
+
+        if (is_array($filter) && array_key_exists('hydrate', $filter)) {
+            $value = $filter['hydrate']($value);
+        }
+
+        return $value;
     }
 
     protected function createModel(string $class)
