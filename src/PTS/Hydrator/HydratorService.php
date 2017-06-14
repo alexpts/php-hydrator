@@ -25,8 +25,8 @@ class HydratorService
         $this->hydrator->hydrateModel($dto, $model, $rules);
     }
 
-    public function extract($model, array $excludeFields = []): array
+    public function extract($model, array $rules = []): array
     {
-        return $this->extractor->extract($model, $excludeFields);
+        return $this->extractor->extract($model, $rules);
     }
 }

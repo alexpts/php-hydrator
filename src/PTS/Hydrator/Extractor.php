@@ -23,9 +23,9 @@ class Extractor
             $rule = $this->normalizer->normalize($rawRule, $dtoKey);
             $val = $this->extractFieldValue($rule, $model);
 
-            if ($val !== null) {
-                $dto[$dtoKey] = $this->extractPipe($val, $rule['pipe']);
-            }
+            $dto[$dtoKey] = $val !== null
+                ? $this->extractPipe($val, $rule['pipe'])
+                : null;
         }
 
         return $dto;

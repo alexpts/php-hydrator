@@ -22,8 +22,9 @@ class HydratorServiceTest extends TestCase
 
     public function setUp(): void
     {
-        $hydrator = new Hydrator(new HydrateClosure, new NormalizerRule);
-        $extractor = new Extractor(new ExtractClosure, new NormalizerRule);
+        $normalizer = new NormalizerRule;
+        $hydrator = new Hydrator(new HydrateClosure, $normalizer);
+        $extractor = new Extractor(new ExtractClosure, $normalizer);
 
         $this->hydrator = new HydratorService($extractor, $hydrator);
         $this->faker = Faker\Factory::create();
@@ -113,7 +114,7 @@ class HydratorServiceTest extends TestCase
 
         $dto = $this->hydrator->extract($user, $rules);
 
-        self::assertCount(5, $dto);
+        self::assertCount(6, $dto);
         self::assertInstanceOf('DateTime', $dto['creAt']);
         self::assertEquals($user->getEmail(), $dto['email']);
         self::assertEquals($user->getName(), $dto['name']);

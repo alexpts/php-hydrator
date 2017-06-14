@@ -49,7 +49,7 @@ class ExtractorTest extends TestCase
 
         $dto = $this->hydrator->extract($user, $rules);
 
-        self::assertCount(5, $dto);
+        self::assertCount(6, $dto);
         self::assertInstanceOf('DateTime', $dto['creAt']);
         self::assertEquals($user->getEmail(), $dto['email']);
         self::assertEquals($user->getName(), $dto['name']);
