@@ -207,8 +207,7 @@ $model = $hydratorService->hydrate($dto, Model::class, $rules);
 При этом все значения типа \DateTime преобразовать в timestamp. 
 
 Но если мы передаем эту же модель на клиент через REST API, то схема преобразования может быть иной.
-Все значения \DateTime нужно представить в виде строки в формате ISO8601. А еще у нас может быть просто более компактное представлеиние этой же модели, без лишних деталей.
-
+Все значения \DateTime нужно представить в виде строки в формате ISO8601.
 
 ```php
 $normalizeRule = new NormalizerRule;
@@ -229,5 +228,9 @@ $model = $dataTransformer->toModel([
 ], UserModel::class);
 
 $dto = $dataTransformer->toDTO($model);
+```
+
+А еще у нас может быть просто более компактное представлеиние этой же модели, без лишних деталей.
+```php
 $shortFormatDto = $dataTransformer->toDTO($model, 'short.dto');
 ```
