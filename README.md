@@ -210,4 +210,24 @@ $model = $hydratorService->hydrate($dto, Model::class, $rules);
 Все значения \DateTime нужно представить в виде строки в формате ISO8601. А еще у нас может быть просто более компактное представлеиние этой же модели, без лишних деталей.
 
 
-... [дописать документацию]
+```php
+$normalizeRule = new NormalizerRule;
+$extractor = new Extractor(new ExtractClosure, $normalizeRule);
+$hydrator = new Hydrator(new HydrateClosure, $normalizeRule);
+$hydratorService = new HydratorService($extractor, $hydrator);
+
+$mapsManager = new MapsManager;
+$mapsManager->setMapDir(UserModel::class, __DIR__ . '/data');
+
+$dataTransformer = new DataTransformer($hydratorService, $mapsManager);
+
+$model = $dataTransformer->toModel([
+    'id' => 1,
+    'creAt' => new \DateTime,
+    'name' => 'Alex',
+    'active' => 1,
+], UserModel::class);
+
+$dto = $dataTransformer->toDTO($model);
+$shortFormatDto = $dataTransformer->toDTO($model, 'short.dto');
+```
