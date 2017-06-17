@@ -234,3 +234,7 @@ $dto = $dataTransformer->toDTO($model);
 ```php
 $shortFormatDto = $dataTransformer->toDTO($model, 'short.dto');
 ```
+
+
+### Вложенные модели
+[... расширить документацию]

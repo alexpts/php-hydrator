@@ -37,7 +37,35 @@ class DataTransformer
             unset($rules[$field]);
         }
 
-        return $this->hydratorService->extract($model, $rules);
+        $dto = $this->hydratorService->extract($model, $rules);
+        return $this->resolveRef($dto, $rules);
+    }
+
+    protected function resolveRef(array $dto, array $rules): array
+    {
+        foreach ($dto as $key => $value) {
+            $rule = $rules[$key];
+            if ($value !== null && array_key_exists('ref', $rule)) {
+                $refRules = $this->mapsManager->getMap($rule['ref']['model'], $rule['ref']['map']);
+                $refDTO = $this->extractRefValue($refRules, $value, $rule);
+                $dto[$key] = $refDTO;
+            }
+        }
+
+        return $dto;
+    }
+
+    protected function extractRefValue(array $refRules, $value, array $rule): array
+    {
+        if (array_key_exists('collection', $rule['ref']) && $rule['ref']['collection']) {
+            $refDTO = array_map(function($item) use ($refRules) {
+                return $this->hydratorService->extract($item, $refRules);
+            }, $value);
+        } else {
+            $refDTO = $this->hydratorService->extract($value, $refRules);
+        }
+
+        return $refDTO;
     }
 
     public function getMapsManager(): MapsManager
