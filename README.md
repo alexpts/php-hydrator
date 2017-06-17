@@ -199,42 +199,7 @@ $model = $hydratorService->hydrate($dto, Model::class, $rules);
 
 ```
 
+### Декларативные правила и рекурсивная гидрация/извлечение
 
-### Data Transformer
-Класс DataTransformer является еще более высокого уровнемвым. Он позволяет работать с HydratorService и описывать схемы преобразования для каждого класса отдельно.
-
-Для одного класса может быть множество схем преобразования. Например для преобразования модели для сохранения в БД требуется преобразовать ее в DTO сущность.
-При этом все значения типа \DateTime преобразовать в timestamp. 
-
-Но если мы передаем эту же модель на клиент через REST API, то схема преобразования может быть иной.
-Все значения \DateTime нужно представить в виде строки в формате ISO8601.
-
-```php
-$normalizeRule = new NormalizerRule;
-$extractor = new Extractor(new ExtractClosure, $normalizeRule);
-$hydrator = new Hydrator(new HydrateClosure, $normalizeRule);
-$hydratorService = new HydratorService($extractor, $hydrator);
-
-$mapsManager = new MapsManager;
-$mapsManager->setMapDir(UserModel::class, __DIR__ . '/data');
-
-$dataTransformer = new DataTransformer($hydratorService, $mapsManager);
-
-$model = $dataTransformer->toModel([
-    'id' => 1,
-    'creAt' => new \DateTime,
-    'name' => 'Alex',
-    'active' => 1,
-], UserModel::class);
-
-$dto = $dataTransformer->toDTO($model);
-```
-
-А еще у нас может быть просто более компактное представлеиние этой же модели, без лишних деталей.
-```php
-$shortFormatDto = $dataTransformer->toDTO($model, 'short.dto');
-```
-
-
-### Вложенные модели
-[... расширить документацию]
+Если требуется рекурсивная гидрация/извлечение зависимостей. Требуется декларативно объявлять правила трансформации.
+То стоит воспользоваться надсткойкой над этой билбиотекой, которая расширяет возможности гидратора - https://github.com/alexpts/php-data-transformer2
