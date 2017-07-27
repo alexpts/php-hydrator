@@ -172,18 +172,20 @@ $model = $hydratorService->hydrate($dto, Model::class, $rules);
 Для обратного конвертирования данных из модели в DTO сущносить и обратно можно использовать один набор правил преобразования.
 За счет чего мы можем описывать правила преобразования декларативно (кроме анонимных функций).
 
-Все Pipe фильтры срабатываю в обе стороны, чтобы разделить фильтры, можно использовать для фидььра немного иной формат записи.
+Все Pipe фильтры срабатываю в обе стороны, чтобы разделить фильтры, можно использовать для фильтра немного иной формат записи.
 ```php
 
 $rules = [
     'creAte' => [
         [
-            'hydrate' => function(int $timestamp) {
-                return new \DateTime('@' . $timestamp);
-            },
-            'extract' => functuin(\DateTime $date) {
-                return $date->getTimestamp();
-            }
+            'pipe' => [
+                hydrate' => function(int $timestamp) {
+                    return new \DateTime('@' . $timestamp);
+                },
+                'extract' => functuin(\DateTime $date) {
+                    return $date->getTimestamp();
+                }
+            ]
         ],
         'someGeneralFilter',
         function ($value) {
