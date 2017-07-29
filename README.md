@@ -179,12 +179,14 @@ $rules = [
     'creAte' => [
         [
             'pipe' => [
-                hydrate' => function(int $timestamp) {
-                    return new \DateTime('@' . $timestamp);
-                },
-                'extract' => functuin(\DateTime $date) {
-                    return $date->getTimestamp();
-                }
+                [
+                    hydrate' => function(int $timestamp) {
+                        return new \DateTime('@' . $timestamp);
+                    },
+                    'extract' => functuin(\DateTime $date) {
+                        return $date->getTimestamp();
+                    }
+                ]
             ]
         ],
         'someGeneralFilter',
