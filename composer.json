@@ -12,6 +12,9 @@
     "data",
     "mapper"
   ],
+  "config": {
+    "optimize-autoloader": true
+  },
   "authors": [
     {
       "name": "Alexpts",
