@@ -151,7 +151,7 @@ $extractor->hydrateModel($dto, $model2, [
 ```php
 $hydratorService = new HydratorService;
 $rules = [
-    'id' => [], // prop as dto`s key 
+    'id' => [], // prop as dto`s key
     'login' => [
         'prop' => 'name', // dto key login fill property name
     ],
@@ -172,21 +172,21 @@ $model = $hydratorService->hydrate($dto, Model::class, $rules);
 
 $rules = [
     'creAte' => [
-		'pipe' => [
-			[
-				hydrate' => function(int $timestamp) {
-					return new \DateTime('@' . $timestamp);
-				},
-				'extract' => functuin(\DateTime $date) {
-					return $date->getTimestamp();
-				}
-			],
-			function ($value) {
-				// function pipe for both convert
-				// ...
-				return $value;
-			}
-		]
+        'pipe' => [
+            [
+                hydrate' => function(int $timestamp) {
+                    return new \DateTime('@' . $timestamp);
+                },
+                'extract' => functuin(\DateTime $date) {
+                    return $date->getTimestamp();
+                }
+            ],
+            function ($value) {
+                // function pipe for both convert
+                // ...
+                return $value;
+            }
+        ]
     ],
 ];
 
