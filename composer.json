@@ -20,11 +20,11 @@
   ],
   "minimum-stability": "stable",
   "require": {
-    "php": "^7.1"
+    "php": "^7.2"
   },
   "require-dev": {
-    "fzaninotto/faker": "^1.6",
-    "phpunit/phpunit": "^6.2"
+    "fzaninotto/faker": "^1.8",
+    "phpunit/phpunit": "^7.0.3"
   },
   "autoload": {
     "psr-0": {

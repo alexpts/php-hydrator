@@ -6,55 +6,51 @@ namespace PTS\Hydrator;
 class HydrateClosure
 {
     /** @var \Closure */
-    protected $hydratePropertyFn;
+    protected $propertyFn;
     /** @var \Closure */
-    protected $hydrateSetterFn;
+    protected $setterFn;
 
-    public function getHydratePropertyFn(): \Closure
+    public function getPropertyFn(): \Closure
     {
-        if ($this->hydratePropertyFn === null) {
-            $this->hydratePropertyFn = $this->createPropertyClosure();
+        if ($this->propertyFn === null) {
+            $this->propertyFn = $this->propertyClosure();
         }
 
-        return $this->hydratePropertyFn;
+        return $this->propertyFn;
     }
 
-    public function getHydrateSetterFn(): \Closure
+    public function getSetterFn(): \Closure
     {
-        if ($this->hydrateSetterFn === null) {
-            $this->hydrateSetterFn = $this->createSetterClosure();
+        if ($this->setterFn === null) {
+            $this->setterFn = $this->setterClosure();
         }
 
-        return $this->hydrateSetterFn;
+        return $this->setterFn;
     }
 
-    protected function createPropertyClosure(): \Closure
+    protected function propertyClosure(): \Closure
     {
         return function(string $property, $value) {
-            if (property_exists($this, $property)) {
-                $this->{$property} = $value;
-            }
+            $this->{$property} = $value;
         };
     }
 
-    protected function createSetterClosure(): \Closure
+    protected function setterClosure(): \Closure
     {
         /**
          * @param string|array $setter
          * @param mixed $value
-         * @throws HydratorException
          */
         return function($setter, $value) {
-            list($method, $args) = is_array($setter)
-                ? [$setter[0], $setter[1]]
-                : [$setter, []];
+        	$method = \is_array($setter) ? $setter[0] : $setter;
+	        $args = \is_array($setter) ? $setter[1] : [];
 
-            if (!is_callable([$this, $method])) {
+            if (!\is_callable([$this, $method])) {
                 throw new HydratorException('Getter key is not callable');
             }
 
             array_unshift($args, $value);
-            call_user_func_array([$this, $method], $args);
+            \call_user_func_array([$this, $method], $args);
         };
     }
 }
