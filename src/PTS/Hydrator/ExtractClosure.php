@@ -6,52 +6,50 @@ namespace PTS\Hydrator;
 class ExtractClosure
 {
     /** @var \Closure */
-    protected $extractPropertyFn;
+    protected $propertyFn;
     /** @var \Closure */
-    protected $extractGetterFn;
+    protected $getterFn;
 
-    public function getExtractPropertyFn(): \Closure
+    public function getPropertyFn(): \Closure
     {
-        if ($this->extractPropertyFn === null) {
-            $this->extractPropertyFn = $this->createPropertyClosure();
+        if ($this->propertyFn === null) {
+            $this->propertyFn = $this->propertyClosure();
         }
 
-        return $this->extractPropertyFn;
+        return $this->propertyFn;
     }
 
-    public function getExtractGetterFn(): \Closure
+    public function getGetterFn(): \Closure
     {
-        if ($this->extractGetterFn === null) {
-            $this->extractGetterFn = $this->createGetterClosure();
+        if ($this->getterFn === null) {
+            $this->getterFn = $this->getterClosure();
         }
 
-        return $this->extractGetterFn;
+        return $this->getterFn;
     }
 
-    protected function createPropertyClosure(): \Closure
+    protected function propertyClosure(): \Closure
     {
         return function(string $property) {
             return property_exists($this, $property) ? $this->{$property} : null;
         };
     }
 
-    protected function createGetterClosure(): \Closure
+    protected function getterClosure(): \Closure
     {
         /**
          * @param string|array $getter
          * @return mixed
-         * @throws ExtractorException
          */
         return function($getter) {
-            list($action, $params) = is_array($getter)
-                ? [$getter[0], $getter[1]]
-                : [$getter, []];
+        	$action = \is_array($getter) ? $getter[0] : $getter;
+        	$params = \is_array($getter) ? $getter[1] : [];
 
-            if (!is_callable([$this, $action])) {
-                throw new ExtractorException('Getter key is not callable');
+            if (!\is_callable([$this, $action])) {
+                throw new ExtractorException('Getter is not callable');
             }
 
-            return call_user_func_array([$this, $action], $params);
+            return \call_user_func_array([$this, $action], $params);
         };
     }
 }

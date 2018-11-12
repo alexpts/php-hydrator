@@ -16,7 +16,7 @@
 Задача класса Extractor извлечь из вашей модели данные согласно указанынм правилам.
 
 ```php
-$extractor = new Extractor(new ExtractClosure, new NormalizerRule);
+$extractor = new Extractor;
 
 $model = new Model([
     'id' => 1,
@@ -86,16 +86,21 @@ $extractor->extract($model, [
 ```
 
 Для каждого поля описывается поле `pipe` в виде массива. Каждый элемент этого массва представлят собой callable тип, через которое пройдет значение.
-Порядок сохраняется обхявлению pipe фильтров.
+Порядок вызова соотвествует объявлению pipe фильтров.
 
 Перед сохранением поля типа \DateTime в базу данных зачастую нужно преобразовать тип в timestamp или иной. Это делается так:
 ```php
 
 $extractor->extract($model, [
     'creAt' => [
-        'pipe' => [function (\DateTime $value) {
-            return $value->getTimestamp();
-        }],
+        'pipe' => [
+        	'extract' => function (\DateTime $value) {
+            	return $value->getTimestamp(); // convert to int
+        	},
+        	'hydrate' => function (int $value) {
+				return new \DateTime('@' . $value); // convert from int
+			},
+        ],
     ]
 ])
 ```
@@ -138,23 +143,13 @@ $extractor->hydrateModel($dto, $model2, [
 Правила гидрации точно такие же как и у extractor сущности.
 
 Точно также можно применять pipe преобразователи, при заполнении модели.
-Чтобы создать конвертировать timestamp в объект \DateTime при наполеннии модели, нужно использовать подобный pipe:
-
-```php
-
-$hydrator->hydratModel($dto, $model, [
-    'creAt' => [
-        'pipe' => [function (int $value) {
-            return new \DateTime('@' . $value);
-        }],
-    ]
-])
-```
 
 ### HydratorService
-Класс HydratorService является простой оберткой над Hydrator и Extractor и является более высокоуровневым.
+
+Класс HydratorService является совмещает в себе Hydrator и Extractor.
+
 ```php
-$hydratorService = new HydratorService($hydrator, $extractor);
+$hydratorService = new HydratorService;
 $rules = [
     'id' => [], // prop as dto`s key 
     'login' => [
@@ -172,25 +167,26 @@ $model = $hydratorService->hydrate($dto, Model::class, $rules);
 Для обратного конвертирования данных из модели в DTO сущносить и обратно можно использовать один набор правил преобразования.
 За счет чего мы можем описывать правила преобразования декларативно (кроме анонимных функций).
 
-Все Pipe фильтры срабатываю в обе стороны, чтобы разделить фильтры, можно использовать для фидььра немного иной формат записи.
+Все Pipe фильтры срабатываю в обе стороны, чтобы разделить фильтры, можно использовать для фильтра немного иной формат записи.
 ```php
 
 $rules = [
     'creAte' => [
-        [
-            'hydrate' => function(int $timestamp) {
-                return new \DateTime('@' . $timestamp);
-            },
-            'extract' => functuin(\DateTime $date) {
-                return $date->getTimestamp();
-            }
-        ],
-        'someGeneralFilter',
-        function ($value) {
-            // general pipe for both convert
-            ...
-            return $value;
-        }
+		'pipe' => [
+			[
+				hydrate' => function(int $timestamp) {
+					return new \DateTime('@' . $timestamp);
+				},
+				'extract' => functuin(\DateTime $date) {
+					return $date->getTimestamp();
+				}
+			],
+			function ($value) {
+				// function pipe for both convert
+				// ...
+				return $value;
+			}
+		]
     ],
 ];
 
@@ -201,5 +197,5 @@ $model = $hydratorService->hydrate($dto, Model::class, $rules);
 
 ### Декларативные правила и рекурсивная гидрация/извлечение
 
-Если требуется рекурсивная гидрация/извлечение зависимостей. Требуется декларативно объявлять правила трансформации.
-То стоит воспользоваться надсткойкой над этой билбиотекой, которая расширяет возможности гидратора - https://github.com/alexpts/php-data-transformer2
+Если требуется рекурсивная гидрация/извлечение зависимостей, требуется декларативно объявлять правила трансформации,
+то стоит воспользоваться надсткойкой над этой билбиотекой - https://github.com/alexpts/php-data-transformer2

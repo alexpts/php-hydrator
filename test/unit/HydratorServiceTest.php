@@ -30,7 +30,12 @@ class HydratorServiceTest extends TestCase
         $this->faker = Faker\Factory::create();
     }
 
-    protected function createUserDto(): array
+	/**
+	 * @return array
+	 *
+	 * @throws Exception
+	 */
+	protected function createUserDto(): array
     {
         return [
             'id' => random_int(1, 9999),
@@ -42,7 +47,10 @@ class HydratorServiceTest extends TestCase
         ];
     }
 
-    public function testHydrate(): void
+	/**
+	 * @throws Exception
+	 */
+	public function testHydrate(): void
     {
         $userDto = $this->createUserDto();
         $rules = [
@@ -65,7 +73,10 @@ class HydratorServiceTest extends TestCase
         self::assertEquals($userDto['active'], $model->isActive());
     }
 
-    public function testHydrateModel(): void
+	/**
+	 * @throws Exception
+	 */
+	public function testHydrateModel(): void
     {
         $userDto = $this->createUserDto();
         $model = new UserModel;

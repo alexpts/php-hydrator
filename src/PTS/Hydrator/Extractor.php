@@ -5,17 +5,17 @@ namespace PTS\Hydrator;
 class Extractor
 {
     /** @var ExtractClosure */
-    protected $extractFn;
+    protected $fn;
     /** @var NormalizerRule */
     protected $normalizer;
 
-    public function __construct(ExtractClosure $extractor, NormalizerRule $normalizer)
+    public function __construct(ExtractClosure $extractor = null, NormalizerRule $normalizer = null)
     {
-        $this->extractFn = $extractor;
-        $this->normalizer = $normalizer;
+        $this->fn = $extractor ?? new ExtractClosure;
+        $this->normalizer = $normalizer ?? new NormalizerRule;
     }
 
-    public function extract($model, array $rules): array
+    public function extract(object $model, array $rules): array
     {
         $dto = [];
 
@@ -39,9 +39,9 @@ class Extractor
     protected function extractPipe($val, array $pipes)
     {
         foreach ($pipes as $filter) {
-            if (is_callable($filter)) {
+            if (\is_callable($filter)) {
                 $val = $filter($val);
-            } else if (is_array($filter) && array_key_exists('extract', $filter)) {
+            } else if (\is_array($filter) && array_key_exists('extract', $filter)) {
                 $val = $filter['extract']($val);
             }
         }
@@ -49,10 +49,10 @@ class Extractor
         return $val;
     }
 
-    protected function extractFieldValue(array $rule, $model)
+    protected function extractFieldValue(array $rule, object $model)
     {
         return array_key_exists('get', $rule)
-            ? $this->extractFn->getExtractGetterFn()->call($model, $rule['get'])
-            : $this->extractFn->getExtractPropertyFn()->call($model, $rule['prop']);
+            ? $this->fn->getGetterFn()->call($model, $rule['get'])
+            : $this->fn->getPropertyFn()->call($model, $rule['prop']);
     }
 }

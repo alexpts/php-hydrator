@@ -9,12 +9,12 @@ class Hydrator
     /** @var NormalizerRule */
     protected $normalizer;
     /** @var HydrateClosure */
-    protected $hydrateFn;
+    protected $fn;
 
-    public function __construct(HydrateClosure $hydrateFn, NormalizerRule $normalizer)
+    public function __construct(HydrateClosure $hydrateFn = null, NormalizerRule $normalizer = null)
     {
-        $this->hydrateFn = $hydrateFn;
-        $this->normalizer = $normalizer;
+        $this->fn = $hydrateFn ?? new HydrateClosure;
+        $this->normalizer = $normalizer ?? new NormalizerRule;
     }
 
     public function hydrate(array $dto, string $class, array $rules)
@@ -25,7 +25,7 @@ class Hydrator
         return $model;
     }
 
-    public function hydrateModel(array $dto, $model, array $rules): void
+    public function hydrateModel(array $dto, object $model, array $rules): void
     {
         foreach ($dto as $name => $val) {
             if (!array_key_exists($name, $rules)) {
@@ -38,11 +38,11 @@ class Hydrator
         }
     }
 
-    protected function fillFieldValue($value, array $rule, $model): void
+    protected function fillFieldValue($value, array $rule, object $model): void
     {
         array_key_exists('set', $rule)
-            ? $this->hydrateFn->getHydrateSetterFn()->call($model, $rule['set'], $value)
-            : $this->hydrateFn->getHydratePropertyFn()->call($model, $rule['prop'], $value);
+            ? $this->fn->getSetterFn()->call($model, $rule['set'], $value)
+            : $this->fn->getPropertyFn()->call($model, $rule['prop'], $value);
     }
 
     /**
@@ -66,18 +66,18 @@ class Hydrator
      */
     protected function applyFilter($value, $filter)
     {
-        if (is_callable($filter)) {
+        if (\is_callable($filter)) {
             return $filter($value);
         }
 
-        if (is_array($filter) && array_key_exists('hydrate', $filter)) {
+        if (\is_array($filter) && array_key_exists('hydrate', $filter)) {
             $value = $filter['hydrate']($value);
         }
 
         return $value;
     }
 
-    protected function createModel(string $class)
+    protected function createModel(string $class): object
     {
         $reflection = $this->getReflection($class);
         return $reflection->newInstanceWithoutConstructor();
