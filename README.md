@@ -94,13 +94,15 @@ $extractor->extract($model, [
 $extractor->extract($model, [
     'creAt' => [
         'pipe' => [
-        	'extract' => function (\DateTime $value) {
-            	return $value->getTimestamp(); // convert to int
-        	},
-        	'hydrate' => function (int $value) {
+		[
+        		'extract' => function (\DateTime $value) {
+            			return $value->getTimestamp(); // convert to int
+        		},
+        		'hydrate' => function (int $value) {
 				return new \DateTime('@' . $value); // convert from int
 			},
-        ],
+        	]
+	],
     ]
 ])
 ```
