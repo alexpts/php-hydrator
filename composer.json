@@ -27,11 +27,11 @@
   },
   "require-dev": {
     "fzaninotto/faker": "^1.8",
-    "phpunit/phpunit": "^7.0.3"
+    "phpunit/phpunit": "^7.5"
   },
   "autoload": {
-    "psr-0": {
-      "PTS\\Hydrator": "src"
+    "psr-4": {
+      "PTS\\Hydrator\\": "src"
     }
   }
 }
