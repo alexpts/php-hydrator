@@ -8,7 +8,8 @@ class HydrateClosure
 
     public function populateClosure(): \Closure
     {
-        return function (array $dto, array $rules): void {
+        return function(array $dto, array $rules): void
+        {
             foreach ($dto as $name => $value) {
                 $rule = $rules[$name] ?? null;
                 if ($rule === null) {

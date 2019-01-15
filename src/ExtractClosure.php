@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace PTS\Hydrator;
 
@@ -8,7 +8,7 @@ class ExtractClosure
 
     public function extractClosure(): \Closure
     {
-        return function (array $rules): array
+        return function(array $rules): array
         {
             $dto = [];
 
