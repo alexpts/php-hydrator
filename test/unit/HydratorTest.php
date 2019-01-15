@@ -49,7 +49,7 @@ class HydratorTest extends TestCase
         ]);
 
         /** @var UserModel $model */
-        $model = $this->hydrator->hydrate($userDto, UserModel::class, $rules->getRules());
+        $model = $this->hydrator->hydrate($userDto, UserModel::class, $rules->rules);
 
         self::assertInstanceOf(UserModel::class, $model);
         self::assertEquals($userDto['creAt'], $model->getCreAt());
@@ -73,7 +73,7 @@ class HydratorTest extends TestCase
             'email' => [],
         ]);
 
-        $this->hydrator->hydrateModel($userDto, $model, $rules->getRules());
+        $this->hydrator->hydrateModel($userDto, $model, $rules->rules);
 
         self::assertInstanceOf(UserModel::class, $model);
         self::assertEquals($userDto['creAt'], $model->getCreAt());
@@ -93,7 +93,7 @@ class HydratorTest extends TestCase
         ]);
 
         /** @var UserModel $model */
-        $model = $this->hydrator->hydrate($userDto, UserModel::class, $rules->getRules());
+        $model = $this->hydrator->hydrate($userDto, UserModel::class, $rules->rules);
         self::assertInstanceOf(\DateTime::class, $model->getCreAt());
         self::assertEquals($userDto['creAt'], $model->getCreAt());
     }
@@ -108,7 +108,7 @@ class HydratorTest extends TestCase
         ]);
 
         /** @var UserModel $model */
-        $model = $this->hydrator->hydrate($userDto, UserModel::class, $rules->getRules());
+        $model = $this->hydrator->hydrate($userDto, UserModel::class, $rules->rules);
         self::assertEquals($userDto['name'] . ' ' . 'Mrs.', $model->getName());
     }
 
@@ -123,6 +123,6 @@ class HydratorTest extends TestCase
             ],
         ]);
 
-        $this->hydrator->hydrate($userDto, UserModel::class, $rules->getRules());
+        $this->hydrator->hydrate($userDto, UserModel::class, $rules->rules);
     }
 }

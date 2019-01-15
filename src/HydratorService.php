@@ -17,16 +17,16 @@ class HydratorService implements HydratorInterface
 
     public function hydrate(array $dto, string $class, Rules $rules)
     {
-        return $this->hydrator->hydrate($dto, $class, $rules->getRules());
+        return $this->hydrator->hydrate($dto, $class, $rules->rules);
     }
 
     public function hydrateModel(array $dto, object $model, Rules $rules): void
     {
-        $this->hydrator->hydrateModel($dto, $model, $rules->getRules());
+        $this->hydrator->hydrateModel($dto, $model, $rules->rules);
     }
 
     public function extract(object $model, Rules $rules): array
     {
-        return $this->extractor->extract($model, $rules->getRules());
+        return $this->extractor->extract($model, $rules->rules);
     }
 }
