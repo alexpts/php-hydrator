@@ -1,15 +1,23 @@
 <?php
 
+use Blackfire\Client;
+use Blackfire\Profile\Configuration;
 use PTS\Hydrator\HydratorService;
 
 require_once __DIR__  .'/../vendor/autoload.php';
 require_once 'UserModel.php';
 
 $iterations = $argv[1] ?? 1000;
+$blackfire = $argv[2] ?? false;
 $iterations++;
-$startTime = microtime(true);
+
+if ($blackfire) {
+    $client = new Client;
+    $probe = $client->createProbe(new Configuration);
+}
 
 $service = new HydratorService;
+$startTime = microtime(true);
 
 while ($iterations--) {
     $dto =  [
@@ -42,3 +50,7 @@ while ($iterations--) {
 $diff = (microtime(true) - $startTime) * 1000;
 echo sprintf('%2.3f ms', $diff);
 echo "\n" . memory_get_peak_usage()/1024;
+
+if ($blackfire) {
+    $client->endProbe($probe);
+}
