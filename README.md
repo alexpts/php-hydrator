@@ -24,15 +24,17 @@ $model = new Model([
     'email' => 'some@web.dev'
 ]);
 
-$extractor->extract($model, [
-    'id' => [], // prop as dto`s key 
-    'name' => [
-        'prop' => 'name', // prop is name field in model
-    ],
-    'email' => [
-        'get' => 'getEmail', // getter $model->getEmail();
-    ]
-])
+$rules = [
+   'id' => [], // prop as dto`s key
+   'name' => [
+	   'prop' => 'name', // prop is name field in model
+   ],
+   'email' => [
+	   'get' => 'getEmail', // getter $model->getEmail();
+   ]
+];
+
+$extractor->extract($model, $rules)
 ```
 
 Правила извлечения данных описываются в виде ассоциативного массива, где ключ массива это имя ключа в DTO сущности.
@@ -40,79 +42,48 @@ $extractor->extract($model, [
 
 ```php
 
-$extractor->extract($model, [
-    'login' => [
-        'prop' => 'name',
-    ],
-    ...
-])
+$rules = [
+   'login' => [
+	   'prop' => 'name',
+   ],
+   ...
+];
+$extractor->extract($model, $rules);
 ```
 
-Извлечение через prop позволяет извлеч из модели поле с любой обрастью видимости (public/protect/private).
+Извлечение через prop позволяет извлеч из модели поле с любой областью видимости (public/protect/private).
 Если значение prop не указано явно, то оно равно имени ключа DTO сущности. В следующем примере это будет значение name.
 ```php
 
-$extractor->extract($model, [
-    'name' => [],
-    ...
-])
+$rules = [
+   'name' => [],
+   ...
+];
+
+$extractor->extract($model, $rules)
 ```
 
-Помимо извлечения данных свойств из моделе, данные можно получить через вызов метода модели (getter).
+Помимо извлечения данных свойств из модели, данные можно получить через вызов метода модели (getter).
 ```php
-$extractor->extract($model, [
-    'name' => [
-        'get' => 'getName', // getter $model->getName();
-    ],
-])
+
+$rules = [
+   'name' => [
+	   'get' => 'getName', // getter $model->getName();
+   ],
+];
+
+$extractor->extract($model, $rules);
 ```
 
 Геттер имеит более высокий приоритет, чем свойтво prop.
 
-### Extractor Pipes
-Помимо извлечения даннх из модели можно к каждому извлеченному значению применять фильтры.
-Например явно конвертировать тип данных можно так:
-
-```php
-
-$extractor->extract($model, [
-    'name' => [
-        'pipe' => ['strval', 'trim'],
-    ],
-    'age' => [
-       'pipe' => ['intval'],
-    ],
-])
-```
-
-Для каждого поля описывается поле `pipe` в виде массива. Каждый элемент этого массва представлят собой callable тип, через которое пройдет значение.
-Порядок вызова соотвествует объявлению pipe фильтров.
-
-Перед сохранением поля типа \DateTime в базу данных зачастую нужно преобразовать тип в timestamp или иной. Это делается так:
-```php
-
-$extractor->extract($model, [
-    'creAt' => [
-        'pipe' => [
-		[
-        		'extract' => function (\DateTime $value) {
-            			return $value->getTimestamp(); // convert to int
-        		},
-        		'hydrate' => function (int $value) {
-				return new \DateTime('@' . $value); // convert from int
-			},
-        	]
-	],
-    ]
-])
-```
 
 ### Hydrator
 Класс Hydrator позволяет наполнить модель данными.
 
 
 ```php
-$hydrator = new Hydrator(new HydrateClosure, new NormalizerRule);
+$hydrator = new Hydrator;
 
 $dto = [
     'id' => 1,
@@ -120,8 +91,34 @@ $dto = [
     'email' => 'some@web.dev
 ];
 
-$model = $extractor->hydrate($dto, Model::class, [
-    'id' => [], // prop as dto`s key 
+$rules = [
+	'id' => [], // prop as dto`s key
+	'login' => [
+		'prop' => 'name', // dto key login fill property name
+	],
+	'email' => [
+		'set' => 'setEmail', // setter $model->setEmail();
+	]
+];
+
+$model = $extractor->hydrate($dto, Model::class, $rules);
+
+$model2 = new Model;
+$extractor->hydrateModel($dto, $model2, $rules);
+```
+
+Правила гидрации точно такие же как и у extractor сущности.
+
+
+### HydratorService
+
+Класс HydratorService является совмещает в себе Hydrator и Extractor.
+Также он требует правил в виде сущности Rules, которая сглаживает правил и позволяет описывать их более лаконично
+
+```php
+$hydratorService = new HydratorService;
+$rules = new Rules([
+    'id' => [], // prop as dto`s key
     'login' => [
         'prop' => 'name', // dto key login fill property name
     ],
@@ -130,74 +127,11 @@ $model = $extractor->hydrate($dto, Model::class, [
     ]
 ]);
 
-$model2 = new Model;
-$extractor->hydrateModel($dto, $model2, [
-    'id' => [], // prop as dto`s key 
-    'login' => [
-        'prop' => 'name', // dto key login fill property name
-    ],
-    'email' => [
-        'set' => 'setEmail', // setter $model->setEmail();
-    ]
-])
-```
-
-Правила гидрации точно такие же как и у extractor сущности.
-
-Точно также можно применять pipe преобразователи, при заполнении модели.
-
-### HydratorService
-
-Класс HydratorService является совмещает в себе Hydrator и Extractor.
-
-```php
-$hydratorService = new HydratorService;
-$rules = [
-    'id' => [], // prop as dto`s key
-    'login' => [
-        'prop' => 'name', // dto key login fill property name
-    ],
-    'email' => [
-        'set' => 'setEmail', // setter $model->setEmail();
-    ]
-];
-
 $dto = $hydratorService->extract($model, $rules);
 $model = $hydratorService->hydrate($dto, Model::class, $rules);
 ```
 
-Для обратного конвертирования данных из модели в DTO сущносить и обратно можно использовать один набор правил преобразования.
-За счет чего мы можем описывать правила преобразования декларативно (кроме анонимных функций).
-
-Все Pipe фильтры срабатываю в обе стороны, чтобы разделить фильтры, можно использовать для фильтра немного иной формат записи.
-```php
-
-$rules = [
-    'creAte' => [
-        'pipe' => [
-            [
-                hydrate' => function(int $timestamp) {
-                    return new \DateTime('@' . $timestamp);
-                },
-                'extract' => functuin(\DateTime $date) {
-                    return $date->getTimestamp();
-                }
-            ],
-            function ($value) {
-                // function pipe for both convert
-                // ...
-                return $value;
-            }
-        ]
-    ],
-];
-
-$dto = $hydratorService->extract($model, $rules);
-$model = $hydratorService->hydrate($dto, Model::class, $rules);
-
-```
-
-### Декларативные правила и рекурсивная гидрация/извлечение
+### Больше возможностей
 
 Если требуется рекурсивная гидрация/извлечение зависимостей, требуется декларативно объявлять правила трансформации,
-то стоит воспользоваться надсткойкой над этой билбиотекой - https://github.com/alexpts/php-data-transformer2
+вызывать pipe функции для фильтрации значения, то стоит воспользоваться надсткойкой над этой билбиотекой - https://github.com/alexpts/php-data-transformer2

@@ -15,18 +15,18 @@ class HydratorService implements HydratorInterface
         $this->hydrator = $hydrator ?? new Hydrator;
     }
 
-    public function hydrate(array $dto, string $class, array $rules)
+    public function hydrate(array $dto, string $class, Rules $rules)
     {
-        return $this->hydrator->hydrate($dto, $class, $rules);
+        return $this->hydrator->hydrate($dto, $class, $rules->getRules());
     }
 
-    public function hydrateModel(array $dto, object $model, array $rules): void
+    public function hydrateModel(array $dto, object $model, Rules $rules): void
     {
-        $this->hydrator->hydrateModel($dto, $model, $rules);
+        $this->hydrator->hydrateModel($dto, $model, $rules->getRules());
     }
 
-    public function extract(object $model, array $rules = []): array
+    public function extract(object $model, Rules $rules): array
     {
-        return $this->extractor->extract($model, $rules);
+        return $this->extractor->extract($model, $rules->getRules());
     }
 }

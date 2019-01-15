@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 use PTS\Hydrator\HydrateClosure;
 use PTS\Hydrator\Hydrator;
 use PTS\Hydrator\HydratorException;
-use PTS\Hydrator\NormalizerRule;
+use PTS\Hydrator\Rules;
 use PTS\Hydrator\UserModel;
 
 require_once __DIR__ . '/data/UserModel.php';
@@ -20,14 +20,14 @@ class HydratorTest extends TestCase
 
     public function setUp(): void
     {
-        $this->hydrator = new Hydrator(new HydrateClosure, new NormalizerRule);
+        $this->hydrator = new Hydrator(new HydrateClosure);
         $this->faker = Faker\Factory::create();
     }
 
     protected function createUser(): array
     {
         return [
-            'id' => random_int(1, 9999),
+            'id' => \random_int(1, 9999),
             'creAt' => new \DateTime($this->faker->date),
             'name' => $this->faker->name,
             'login' => $this->faker->name,
@@ -39,17 +39,17 @@ class HydratorTest extends TestCase
     public function testHydrate(): void
     {
         $userDto = $this->createUser();
-        $rules = [
+        $rules = new Rules([
             'id' => [],
             'creAt' => [],
             'name' => [],
             'login' => [],
             'active' => [],
             'email' => [],
-        ];
+        ]);
 
         /** @var UserModel $model */
-        $model = $this->hydrator->hydrate($userDto, UserModel::class, $rules);
+        $model = $this->hydrator->hydrate($userDto, UserModel::class, $rules->getRules());
 
         self::assertInstanceOf(UserModel::class, $model);
         self::assertEquals($userDto['creAt'], $model->getCreAt());
@@ -64,16 +64,16 @@ class HydratorTest extends TestCase
         $userDto = $this->createUser();
         $model = new UserModel;
 
-        $rules = [
+        $rules = new Rules([
             'id' => [],
             'creAt' => [],
             'name' => [],
             'login' => [],
             'active' => [],
             'email' => [],
-        ];
+        ]);
 
-        $this->hydrator->hydrateModel($userDto, $model, $rules);
+        $this->hydrator->hydrateModel($userDto, $model, $rules->getRules());
 
         self::assertInstanceOf(UserModel::class, $model);
         self::assertEquals($userDto['creAt'], $model->getCreAt());
@@ -83,57 +83,17 @@ class HydratorTest extends TestCase
         self::assertEquals($userDto['active'], $model->isActive());
     }
 
-    public function testHydratePipe(): void
-    {
-        $userDto = $this->createUser();
-        $userDto['creAt'] = time();
-        $rules = [
-            'creAt' => [
-                'pipe' => [
-                    function (int $value) {
-                        return new \DateTime('@' . $value);
-                    }
-                ]
-            ],
-        ];
-
-        /** @var UserModel $model */
-        $model = $this->hydrator->hydrate($userDto, UserModel::class, $rules);
-        self::assertInstanceOf(\DateTime::class, $model->getCreAt());
-        self::assertEquals($model->getCreAt()->getTimestamp(), $userDto['creAt']);
-    }
-
-    public function testHydratePipeOnlyHydrate(): void
-    {
-        $userDto = $this->createUser();
-        $userDto['creAt'] = time();
-        $rules = [
-            'creAt' => [
-                'pipe' => [[
-                    'hydrate' => function (int $value) {
-                        return new \DateTime('@' . $value);
-                    }
-                ]]
-            ],
-        ];
-
-        /** @var UserModel $model */
-        $model = $this->hydrator->hydrate($userDto, UserModel::class, $rules);
-        self::assertInstanceOf(\DateTime::class, $model->getCreAt());
-        self::assertEquals($model->getCreAt()->getTimestamp(), $userDto['creAt']);
-    }
-
     public function testExtractViaSetter(): void
     {
         $userDto = $this->createUser();
-        $rules = [
+        $rules = new Rules([
             'creAt' => [
                 'set' => 'setCreAt'
             ],
-        ];
+        ]);
 
         /** @var UserModel $model */
-        $model = $this->hydrator->hydrate($userDto, UserModel::class, $rules);
+        $model = $this->hydrator->hydrate($userDto, UserModel::class, $rules->getRules());
         self::assertInstanceOf(\DateTime::class, $model->getCreAt());
         self::assertEquals($userDto['creAt'], $model->getCreAt());
     }
@@ -141,14 +101,14 @@ class HydratorTest extends TestCase
     public function testExtractViaGettersWithParams(): void
     {
         $userDto = $this->createUser();
-        $rules = [
+        $rules = new Rules([
             'name' => [
                 'set' => ['setTitleName', ['Mrs.']]
             ],
-        ];
+        ]);
 
         /** @var UserModel $model */
-        $model = $this->hydrator->hydrate($userDto, UserModel::class, $rules);
+        $model = $this->hydrator->hydrate($userDto, UserModel::class, $rules->getRules());
         self::assertEquals($userDto['name'] . ' ' . 'Mrs.', $model->getName());
     }
 
@@ -157,12 +117,12 @@ class HydratorTest extends TestCase
         $this->expectException(HydratorException::class);
 
         $userDto = $this->createUser();
-        $rules = [
+        $rules = new Rules([
             'name' => [
                 'set' => 'unknownGetter'
             ],
-        ];
+        ]);
 
-        $this->hydrator->hydrate($userDto, UserModel::class, $rules);
+        $this->hydrator->hydrate($userDto, UserModel::class, $rules->getRules());
     }
 }

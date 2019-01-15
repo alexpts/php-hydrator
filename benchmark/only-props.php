@@ -17,7 +17,6 @@ if ($blackfire) {
     $probe = $client->createProbe(new Configuration);
 }
 
-$startTime = microtime(true);
 $service = new HydratorService;
 
 $dto =  [
@@ -32,17 +31,13 @@ $dto =  [
 $rules = new Rules([
     'id' => [],
     'creAt' => [],
-    'name' => [
-        'get' => 'getName',
-        'set' => 'setName'
-    ],
+    'name' => [],
     'login' => [],
     'active' => [],
-    'email' => [
-        'pipe' => ['strtolower']
-    ],
+    'email' => [],
 ]);
 
+$startTime = microtime(true);
 while ($iterations--) {
     $model = $service->hydrate($dto, UserModel::class, $rules);
     $newDto = $service->extract($model, $rules);
