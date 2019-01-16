@@ -22,11 +22,14 @@ class HydrateClosure
                     continue;
                 }
 
-                $isArray = \is_array($setter);
-                $method = $isArray ? $setter[0] : $setter;
-                $args = $isArray ? $setter[1] : [];
 
-                array_unshift($args, $value);
+                $args = [$value];
+                $method = $setter;
+                if (\is_array($setter)) {
+                    [$method, $args] = $setter;
+                    array_unshift($args, $value);
+                }
+
                 \call_user_func_array([$this, $method], $args);
             }
         };
