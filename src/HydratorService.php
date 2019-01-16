@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace PTS\Hydrator;
 
@@ -8,25 +9,29 @@ class HydratorService implements HydratorInterface
     protected $extractor;
     /** @var Hydrator */
     protected $hydrator;
+    /** @var Normalizer|null */
+    protected $normalizer;
 
-    public function __construct(Extractor $extractor = null, Hydrator $hydrator = null)
-    {
+    public function __construct(
+        Extractor $extractor = null,
+        Hydrator $hydrator = null
+    ) {
         $this->extractor = $extractor ?? new Extractor;
         $this->hydrator = $hydrator ?? new Hydrator;
     }
 
-    public function hydrate(array $dto, string $class, Rules $rules)
+    public function hydrate(array $dto, string $class, array $rules)
     {
-        return $this->hydrator->hydrate($dto, $class, $rules->rules);
+        return $this->hydrator->hydrate($dto, $class, $rules);
     }
 
-    public function hydrateModel(array $dto, object $model, Rules $rules): void
+    public function hydrateModel(array $dto, object $model, array $rules): void
     {
-        $this->hydrator->hydrateModel($dto, $model, $rules->rules);
+        $this->hydrator->hydrateModel($dto, $model, $rules);
     }
 
-    public function extract(object $model, Rules $rules): array
+    public function extract(object $model, array $rules): array
     {
-        return $this->extractor->extract($model, $rules->rules);
+        return $this->extractor->extract($model, $rules);
     }
 }

@@ -8,7 +8,7 @@ use PTS\Hydrator\Extractor;
 use PTS\Hydrator\HydrateClosure;
 use PTS\Hydrator\Hydrator;
 use PTS\Hydrator\HydratorService;
-use PTS\Hydrator\Rules;
+use PTS\Hydrator\Normalizer;
 use PTS\Hydrator\UserModel;
 
 require_once __DIR__ . '/data/UserModel.php';
@@ -19,6 +19,8 @@ class HydratorServiceTest extends TestCase
     protected $hydrator;
     /** @var Generator */
     protected $faker;
+    /** @var Normalizer */
+    protected $normalizer;
 
     public function setUp(): void
     {
@@ -27,6 +29,7 @@ class HydratorServiceTest extends TestCase
 
         $this->hydrator = new HydratorService($extractor, $hydrator);
         $this->faker = Faker\Factory::create();
+        $this->normalizer = new Normalizer;
     }
 
 	/**
@@ -52,14 +55,15 @@ class HydratorServiceTest extends TestCase
 	public function testHydrate(): void
     {
         $userDto = $this->createUserDto();
-        $rules = new Rules([
+        $rules = [
             'id' => [],
             'creAt' => [],
             'name' => [],
             'login' => [],
             'active' => [],
             'email' => [],
-        ]);
+        ];
+        $rules = $this->normalizer->normalize($rules);
 
         /** @var UserModel $model */
         $model = $this->hydrator->hydrate($userDto, UserModel::class, $rules);
@@ -80,14 +84,15 @@ class HydratorServiceTest extends TestCase
         $userDto = $this->createUserDto();
         $model = new UserModel;
 
-        $rules = new Rules([
+        $rules = [
             'id' => [],
             'creAt' => [],
             'name' => [],
             'login' => [],
             'active' => [],
             'email' => [],
-        ]);
+        ];
+        $rules = $this->normalizer->normalize($rules);
 
         $this->hydrator->hydrateModel($userDto, $model, $rules);
 
@@ -113,14 +118,15 @@ class HydratorServiceTest extends TestCase
     public function testExtract(): void
     {
         $user = $this->createUser();
-        $rules = new Rules([
+        $rules = [
             'id' => [],
             'creAt' => [],
             'name' => [],
             'login' => [],
             'active' => [],
             'email' => [],
-        ]);
+        ];
+        $rules = $this->normalizer->normalize($rules);
 
         $dto = $this->hydrator->extract($user, $rules);
 

@@ -5,8 +5,7 @@ use Faker\Generator;
 use PHPUnit\Framework\TestCase;
 use PTS\Hydrator\ExtractClosure;
 use PTS\Hydrator\Extractor;
-use PTS\Hydrator\ExtractorException;
-use PTS\Hydrator\Rules;
+use PTS\Hydrator\Normalizer;
 use PTS\Hydrator\UserModel;
 
 require_once __DIR__ . '/data/UserModel.php';
@@ -17,11 +16,14 @@ class ExtractorTest extends TestCase
     protected $hydrator;
     /** @var Generator */
     protected $faker;
+    /** @var Normalizer */
+    protected $normalizer;
 
     public function setUp(): void
     {
         $this->hydrator = new Extractor(new ExtractClosure);
         $this->faker = Faker\Factory::create();
+        $this->normalizer = new Normalizer;
     }
 
     protected function createUser(): UserModel
@@ -38,16 +40,17 @@ class ExtractorTest extends TestCase
     public function testExtract(): void
     {
         $user = $this->createUser();
-        $rules = new Rules([
+        $rules = [
             'id' => [],
             'creAt' => [],
             'name' => [],
             'login' => [],
             'active' => [],
             'email' => [],
-        ]);
+        ];
+        $rules = $this->normalizer->normalize($rules);
 
-        $dto = $this->hydrator->extract($user, $rules->rules);
+        $dto = $this->hydrator->extract($user, $rules);
 
         self::assertCount(6, $dto);
         self::assertInstanceOf('DateTime', $dto['creAt']);

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace PTS\Hydrator;
 
@@ -18,7 +19,8 @@ class Hydrator
 
     public function hydrate(array $dto, string $class, array $rules)
     {
-        $model = $this->createModel($class);
+        $reflection = $this->getReflection($class);
+        $model = $reflection->newInstanceWithoutConstructor();
         $this->hydrateModel($dto, $model, $rules);
 
         return $model;
@@ -27,12 +29,6 @@ class Hydrator
     public function hydrateModel(array $dto, object $model, array $rules): void
     {
         $this->populateClosure->call($model, $dto, $rules);
-    }
-
-    protected function createModel(string $class): object
-    {
-        $reflection = $this->getReflection($class);
-        return $reflection->newInstanceWithoutConstructor();
     }
 
     protected function getReflection(string $class): \ReflectionClass

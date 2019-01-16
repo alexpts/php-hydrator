@@ -19,6 +19,7 @@ if ($blackfire) {
 
 $startTime = microtime(true);
 $service = new HydratorService;
+$normalizer = new \PTS\Hydrator\Normalizer;
 
 $dto =  [
     'id' => 1,
@@ -29,7 +30,7 @@ $dto =  [
     'email' => 'some@cloud.net'
 ];
 
-$rules = new Rules([
+$rules = [
     'id' => [],
     'creAt' => [],
     'name' => [
@@ -41,7 +42,8 @@ $rules = new Rules([
     'email' => [
         'pipe' => ['strtolower']
     ],
-]);
+];
+$rules = $normalizer->normalize($rules);
 
 while ($iterations--) {
     $model = $service->hydrate($dto, UserModel::class, $rules);

@@ -17,6 +17,7 @@
 
 ```php
 $extractor = new Extractor;
+$normalizer = new \PTS\Hydrator\Normalizer;
 
 $model = new Model([
     'id' => 1,
@@ -33,6 +34,7 @@ $rules = [
 	   'get' => 'getEmail', // getter $model->getEmail();
    ]
 ];
+$rules = $normalizer->normalize($rules);
 
 $extractor->extract($model, $rules)
 ```
@@ -59,6 +61,7 @@ $rules = [
    'name' => [],
    ...
 ];
+$rules = $normalizer->normalize($rules);
 
 $extractor->extract($model, $rules)
 ```
@@ -100,6 +103,7 @@ $rules = [
 		'set' => 'setEmail', // setter $model->setEmail();
 	]
 ];
+$rules = $normalizer->normalize($rules);
 
 $model = $extractor->hydrate($dto, Model::class, $rules);
 
@@ -117,7 +121,7 @@ $extractor->hydrateModel($dto, $model2, $rules);
 
 ```php
 $hydratorService = new HydratorService;
-$rules = new Rules([
+$rules = [
     'id' => [], // prop as dto`s key
     'login' => [
         'prop' => 'name', // dto key login fill property name
@@ -125,7 +129,8 @@ $rules = new Rules([
     'email' => [
         'set' => 'setEmail', // setter $model->setEmail();
     ]
-]);
+];
+$rules = $normalizer->normalize($rules);
 
 $dto = $hydratorService->extract($model, $rules);
 $model = $hydratorService->hydrate($dto, Model::class, $rules);
