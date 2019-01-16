@@ -5,7 +5,6 @@ use Faker\Generator;
 use PHPUnit\Framework\TestCase;
 use PTS\Hydrator\HydrateClosure;
 use PTS\Hydrator\Hydrator;
-use PTS\Hydrator\HydratorException;
 use PTS\Hydrator\Rules;
 use PTS\Hydrator\UserModel;
 
@@ -114,7 +113,7 @@ class HydratorTest extends TestCase
 
     public function testExtractViaBadSetters(): void
     {
-        $this->expectException(HydratorException::class);
+        $this->expectException(TypeError::class);
 
         $userDto = $this->createUser();
         $rules = new Rules([

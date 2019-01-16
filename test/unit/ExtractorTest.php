@@ -86,7 +86,7 @@ class ExtractorTest extends TestCase
 
     public function testExtractViaBadGetters(): void
     {
-        $this->expectException(ExtractorException::class);
+        $this->expectException(TypeError::class);
 
         $user = $this->createUser();
         $rules = [

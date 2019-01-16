@@ -24,10 +24,6 @@ class ExtractClosure
                 $action = $isArray ? $getter[0] : $getter;
                 $params = $isArray ? $getter[1] : [];
 
-                if (!\is_callable([$this, $action])) {
-                    throw new ExtractorException('Getter is not callable');
-                }
-
                 $dto[$name] = \call_user_func_array([$this, $action], $params);
             }
 

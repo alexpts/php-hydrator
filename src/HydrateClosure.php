@@ -18,18 +18,13 @@ class HydrateClosure
 
                 $setter = $rule['set'] ?? false;
                 if (!$setter) {
-                    $prop = $rule['prop'];
-                    $this->{$prop} = $value;
+                    $this->{$rule['prop']} = $value;
                     continue;
                 }
 
                 $isArray = \is_array($setter);
                 $method = $isArray ? $setter[0] : $setter;
                 $args = $isArray ? $setter[1] : [];
-
-                if (!\is_callable([$this, $method])) {
-                    throw new HydratorException('Getter key is not callable');
-                }
 
                 array_unshift($args, $value);
                 \call_user_func_array([$this, $method], $args);
