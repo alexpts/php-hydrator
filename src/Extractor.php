@@ -2,22 +2,19 @@
 
 namespace PTS\Hydrator;
 
-use Closure;
-
-class Extractor implements ExtractorInterface
+class Extractor extends BindClosure implements ExtractorInterface
 {
-
-    /** @var Closure */
-    protected $extractFn;
 
     public function __construct(ExtractClosure $extractor = null)
     {
         $extractor = $extractor ?? new ExtractClosure;
-        $this->extractFn = $extractor->extractClosure();
+        $this->fn = $extractor->extractClosure();
     }
 
     public function extract(object $model, array $rules): array
     {
-        return $this->extractFn->call($model, $rules);
+        $class = get_class($model);
+        $fn = $this->fnCache[$class] ?? $this->createFn($class);
+        return $fn($model, $rules);
     }
 }

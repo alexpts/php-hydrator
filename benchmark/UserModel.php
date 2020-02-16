@@ -3,19 +3,19 @@ declare(strict_types = 1);
 
 class UserModel
 {
-    protected $id;
+    private $id;
     /** @var string */
     protected $name;
     /** @var string */
     protected $login;
-    /** @var \DateTime */
+    /** @var DateTime */
     protected $creAt;
     /** @var bool */
     protected $active;
 
     public function __construct()
     {
-        $this->creAt = new \DateTime;
+        $this->creAt = new DateTime;
     }
 
     public function __toString(): string
@@ -66,12 +66,12 @@ class UserModel
         $this->login = $login;
     }
 
-    public function getCreAt(): \DateTime
+    public function getCreAt(): DateTime
     {
         return $this->creAt;
     }
 
-    public function setCreAt(\DateTime $creAt): void
+    public function setCreAt(DateTime $creAt): void
     {
         $this->creAt = $creAt;
     }

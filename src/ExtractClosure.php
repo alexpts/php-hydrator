@@ -12,7 +12,7 @@ class ExtractClosure
 
     public function extractClosure(): Closure
     {
-        return function(array $rules): array
+        return static function($model, array $rules): array
         {
             $dto = [];
 
@@ -20,7 +20,7 @@ class ExtractClosure
                 $getter = $rule['get'] ?? false;
                 if (!$getter) {
                     $prop = $rule['prop'];
-                    $dto[$name] = $this->{$prop};
+                    $dto[$name] = $model->{$prop};
                     continue;
                 }
 
@@ -28,7 +28,7 @@ class ExtractClosure
                 $action = $isArray ? $getter[0] : $getter;
                 $params = $isArray ? $getter[1] : [];
 
-                $dto[$name] = call_user_func_array([$this, $action], $params);
+                $dto[$name] = call_user_func_array([$model, $action], $params);
             }
 
             return $dto;

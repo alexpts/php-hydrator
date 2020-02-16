@@ -3,35 +3,34 @@ declare(strict_types=1);
 
 namespace PTS\Hydrator;
 
-use Closure;
 use ReflectionClass;
 use ReflectionException;
 
-class Hydrator implements HydratorInterface
+class Hydrator extends BindClosure implements HydratorInterface
 {
-    /** @var array */
+    /** @var object[] */
     protected $emptyModels = [];
-
-    /** @var Closure */
-    protected $populateClosure;
 
     public function __construct(HydrateClosure $hydrateFn = null)
     {
         $fn = $hydrateFn ?? new HydrateClosure;
-        $this->populateClosure = $fn->populateClosure();
+        $this->fn = $fn->populateClosure();
     }
 
     public function hydrate(array $dto, string $class, array $rules)
     {
         $model = $this->emptyModels[$class] ?? $this->createModel($class);
-        $this->populateClosure->call($model, $dto, $rules);
+        $fn = $this->fnCache[$class] ?? $this->createFn($class);
+        $fn($model, $dto, $rules);
 
         return $model;
     }
 
     public function hydrateModel(array $dto, object $model, array $rules): void
     {
-        $this->populateClosure->call($model, $dto, $rules);
+        $class = get_class($model);
+        $fn = $this->fnCache[$class] ?? $this->createFn($class);
+        $fn($model, $dto, $rules);
     }
 
     /**
