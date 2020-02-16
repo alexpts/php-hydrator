@@ -5,8 +5,10 @@ use Faker\Generator;
 use PHPUnit\Framework\TestCase;
 use PTS\Hydrator\ExtractClosure;
 use PTS\Hydrator\Extractor;
+use PTS\Hydrator\ExtractorInterface;
 use PTS\Hydrator\HydrateClosure;
 use PTS\Hydrator\Hydrator;
+use PTS\Hydrator\HydratorInterface;
 use PTS\Hydrator\HydratorService;
 use PTS\Hydrator\Normalizer;
 use PTS\Hydrator\UserModel;
@@ -136,5 +138,17 @@ class HydratorServiceTest extends TestCase
         self::assertEquals($user->getName(), $dto['name']);
         self::assertEquals($user->getLogin(), $dto['login']);
         self::assertEquals($user->isActive(), $dto['active']);
+    }
+
+    public function testGetHydrator(): void
+    {
+        $hydrator = $this->hydrator->getHydrator();
+        self::assertInstanceOf(HydratorInterface::class, $hydrator);
+    }
+
+    public function testGetExtractor(): void
+    {
+        $extractor = $this->hydrator->getExtractor();
+        self::assertInstanceOf(ExtractorInterface::class, $extractor);
     }
 }
