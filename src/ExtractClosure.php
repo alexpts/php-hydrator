@@ -3,10 +3,14 @@ declare(strict_types=1);
 
 namespace PTS\Hydrator;
 
+use Closure;
+use function call_user_func_array;
+use function is_array;
+
 class ExtractClosure
 {
 
-    public function extractClosure(): \Closure
+    public function extractClosure(): Closure
     {
         return function(array $rules): array
         {
@@ -20,11 +24,11 @@ class ExtractClosure
                     continue;
                 }
 
-                $isArray = \is_array($getter);
+                $isArray = is_array($getter);
                 $action = $isArray ? $getter[0] : $getter;
                 $params = $isArray ? $getter[1] : [];
 
-                $dto[$name] = \call_user_func_array([$this, $action], $params);
+                $dto[$name] = call_user_func_array([$this, $action], $params);
             }
 
             return $dto;

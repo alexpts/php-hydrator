@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace PTS\Hydrator;
 
-class HydratorService implements HydratorInterface
+class HydratorService implements HydratorInterface, ExtractorInterface
 {
     /** @var Extractor */
     protected $extractor;
@@ -33,5 +33,15 @@ class HydratorService implements HydratorInterface
     public function extract(object $model, array $rules): array
     {
         return $this->extractor->extract($model, $rules);
+    }
+
+    public function getHydrator(): HydratorInterface
+    {
+        return $this->hydrator;
+    }
+
+    public function getExtractor(): ExtractorInterface
+    {
+        return $this->extractor;
     }
 }

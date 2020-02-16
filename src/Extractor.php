@@ -2,10 +2,12 @@
 
 namespace PTS\Hydrator;
 
-class Extractor
+use Closure;
+
+class Extractor implements ExtractorInterface
 {
 
-    /** @var \Closure */
+    /** @var Closure */
     protected $extractFn;
 
     public function __construct(ExtractClosure $extractor = null)

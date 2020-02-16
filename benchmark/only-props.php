@@ -3,7 +3,6 @@
 use Blackfire\Client;
 use Blackfire\Profile\Configuration;
 use PTS\Hydrator\HydratorService;
-use PTS\Hydrator\Rules;
 
 require_once __DIR__  .'/../vendor/autoload.php';
 require_once 'UserModel.php';
@@ -12,35 +11,43 @@ $iterations = $argv[1] ?? 1000;
 $blackfire = $argv[2] ?? false;
 $iterations++;
 
-if ($blackfire) {
-    $client = new Client;
-    $probe = $client->createProbe(new Configuration);
-}
-
 $service = new HydratorService;
+$normalizer = new \PTS\Hydrator\Normalizer;
+$faker = \Faker\Factory::create();
 
 $dto =  [
-    'id' => 1,
-    'creAt' => time(),
-    'name' => 'Alex',
-    'login' => 'login',
-    'active' => true,
-    'email' => 'some@cloud.net'
+    'id' => $faker->randomDigit,
+    'creAt' => $faker->unixTime(),
+    'name' => $faker->name,
+    'login' => $faker->name,
+    'active' => $faker->boolean,
+    'email' => $faker->email,
 ];
 
-$rules = new Rules([
+$rules = [
     'id' => [],
     'creAt' => [],
     'name' => [],
     'login' => [],
     'active' => [],
     'email' => [],
-]);
+];
+$rules = $normalizer->normalize($rules);
+
+
+if ($blackfire) {
+    $client = new Client;
+    $probe = $client->createProbe(new Configuration);
+}
 
 $startTime = microtime(true);
+
+$hydrator = $service->getHydrator();
+$extractor = $service->getExtractor();
+
 while ($iterations--) {
-    $model = $service->hydrate($dto, UserModel::class, $rules);
-    $newDto = $service->extract($model, $rules);
+    $model = $hydrator->hydrate($dto, UserModel::class, $rules);
+    $newDto = $extractor->extract($model, $rules);
 }
 
 $diff = (microtime(true) - $startTime) * 1000;

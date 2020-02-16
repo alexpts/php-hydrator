@@ -3,12 +3,16 @@ declare(strict_types=1);
 
 namespace PTS\Hydrator;
 
-class Hydrator
+use Closure;
+use ReflectionClass;
+use ReflectionException;
+
+class Hydrator implements HydratorInterface
 {
     /** @var array */
-    protected $reflectionCache = [];
+    protected $emptyModels = [];
 
-    /** @var \Closure */
+    /** @var Closure */
     protected $populateClosure;
 
     public function __construct(HydrateClosure $hydrateFn = null)
@@ -19,9 +23,8 @@ class Hydrator
 
     public function hydrate(array $dto, string $class, array $rules)
     {
-        $reflection = $this->getReflection($class);
-        $model = $reflection->newInstanceWithoutConstructor();
-        $this->hydrateModel($dto, $model, $rules);
+        $model = $this->emptyModels[$class] ?? $this->createModel($class);
+        $this->populateClosure->call($model, $dto, $rules);
 
         return $model;
     }
@@ -31,13 +34,16 @@ class Hydrator
         $this->populateClosure->call($model, $dto, $rules);
     }
 
-    protected function getReflection(string $class): \ReflectionClass
+    /**
+     * @param string $class
+     *
+     * @return object
+     * @throws ReflectionException
+     */
+    protected function createModel(string $class)
     {
-        $hasCache = $this->reflectionCache[$class] ?? false;
-        if (!$hasCache) {
-            $this->reflectionCache[$class] = new \ReflectionClass($class);
-        }
-
-        return $this->reflectionCache[$class];
+        $reflection = new ReflectionClass($class);
+        $this->emptyModels[$class] = $reflection->newInstanceWithoutConstructor();
+        return $this->emptyModels[$class];
     }
 }
