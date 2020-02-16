@@ -105,10 +105,10 @@ $rules = [
 ];
 $rules = $normalizer->normalize($rules);
 
-$model = $extractor->hydrate($dto, Model::class, $rules);
+$model = $hydrator->hydrate($dto, Model::class, $rules);
 
 $model2 = new Model;
-$extractor->hydrateModel($dto, $model2, $rules);
+$hydrator->hydrateModel($dto, $model2, $rules);
 ```
 
 Правила гидрации точно такие же как и у extractor сущности.
