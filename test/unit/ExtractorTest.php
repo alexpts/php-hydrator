@@ -71,7 +71,7 @@ class ExtractorTest extends TestCase
 
         $dto = $this->hydrator->extract($user, $rules);
         self::assertEquals($user->getCreAt()->getTimestamp(), $dto['creAt']);
-        self::assertInternalType('int', $dto['creAt']);
+        self::assertIsInt($dto['creAt']);
     }
 
     public function testExtractViaGettersWithParams(): void
