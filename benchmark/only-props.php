@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 use Blackfire\Client;
 use Blackfire\Profile\Configuration;

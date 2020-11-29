@@ -12,7 +12,7 @@ class HydrateClosure
 
     public function populateClosure(): Closure
     {
-        return static function($model, array $dto, array $rules)
+        return static function(object $model, array $dto, array $rules)
         {
             foreach ($dto as $name => $value) {
                 $rule = $rules[$name] ?? null;

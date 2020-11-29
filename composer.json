@@ -23,12 +23,12 @@
   ],
   "minimum-stability": "stable",
   "require": {
-    "php": "^7.2"
+    "php": "^8.0"
   },
   "require-dev": {
-    "fzaninotto/faker": "^1.9",
-    "phpunit/phpunit": "^8.5",
-    "blackfire/php-sdk": "^1.21"
+    "fzaninotto/faker": "dev-master",
+    "phpunit/phpunit": "^9.4",
+    "blackfire/php-sdk": "^1.23"
   },
   "autoload": {
     "psr-4": {

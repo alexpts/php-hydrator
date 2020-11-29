@@ -12,12 +12,9 @@ require_once __DIR__ . '/data/UserModel.php';
 
 class ExtractorTest extends TestCase
 {
-    /** @var Extractor */
-    protected $hydrator;
-    /** @var Generator */
-    protected $faker;
-    /** @var Normalizer */
-    protected $normalizer;
+    protected Extractor $hydrator;
+    protected Generator $faker;
+    protected Normalizer $normalizer;
 
     public function setUp(): void
     {

@@ -5,7 +5,6 @@ namespace PTS\Hydrator;
 
 class Normalizer
 {
-
     public function normalize(array $rules): array
     {
         foreach ($rules as $name => &$rule) {

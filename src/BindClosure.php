@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace PTS\Hydrator;
 
@@ -7,9 +8,8 @@ use Closure;
 class BindClosure
 {
     /** @var Closure[] */
-    protected $fnCache = [];
-    /** @var Closure */
-    protected $fn;
+    protected array $fnCache = [];
+    protected Closure $fn;
 
     protected function createFn(string $class): Closure
     {

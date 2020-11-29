@@ -4,14 +4,11 @@ declare(strict_types = 1);
 class UserModel
 {
     private $id;
-    /** @var string */
-    protected $name;
-    /** @var string */
-    protected $login;
-    /** @var DateTime */
-    protected $creAt;
-    /** @var bool */
-    protected $active;
+    protected string $name;
+    protected string $login;
+    protected DateTime|int|null $creAt;
+    protected string $email;
+    protected bool $active;
 
     public function __construct()
     {
@@ -32,9 +29,6 @@ class UserModel
     {
         $this->email = $email;
     }
-
-    /** @var string */
-    protected $email;
 
     public function getId()
     {

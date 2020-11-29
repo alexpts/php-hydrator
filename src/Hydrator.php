@@ -9,7 +9,7 @@ use ReflectionException;
 class Hydrator extends BindClosure implements HydratorInterface
 {
     /** @var object[] */
-    protected $emptyModels = [];
+    protected array $emptyModels = [];
 
     public function __construct(HydrateClosure $hydrateFn = null)
     {
@@ -17,7 +17,7 @@ class Hydrator extends BindClosure implements HydratorInterface
         $this->fn = $fn->populateClosure();
     }
 
-    public function hydrate(array $dto, string $class, array $rules)
+    public function hydrate(array $dto, string $class, array $rules): object
     {
         $model = $this->emptyModels[$class] ?? $this->createModel($class);
         $fn = $this->fnCache[$class] ?? $this->createFn($class);
@@ -37,7 +37,7 @@ class Hydrator extends BindClosure implements HydratorInterface
      * @return object
      * @throws ReflectionException
      */
-    protected function createModel(string $class)
+    protected function createModel(string $class): object
     {
         $reflection = new ReflectionClass($class);
         $this->emptyModels[$class] = $reflection->newInstanceWithoutConstructor();

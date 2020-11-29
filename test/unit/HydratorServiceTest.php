@@ -17,12 +17,9 @@ require_once __DIR__ . '/data/UserModel.php';
 
 class HydratorServiceTest extends TestCase
 {
-    /** @var HydratorService */
-    protected $hydrator;
-    /** @var Generator */
-    protected $faker;
-    /** @var Normalizer */
-    protected $normalizer;
+    protected HydratorService $hydrator;
+    protected Generator $faker;
+    protected Normalizer $normalizer;
 
     public function setUp(): void
     {
