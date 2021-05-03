@@ -27,8 +27,8 @@
   },
   "require-dev": {
     "fzaninotto/faker": "dev-master",
-    "phpunit/phpunit": "^9.4",
-    "blackfire/php-sdk": "^1.23"
+    "phpunit/phpunit": "^9.5",
+    "blackfire/php-sdk": "^1.25"
   },
   "autoload": {
     "psr-4": {
