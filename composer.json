@@ -23,16 +23,19 @@
   ],
   "minimum-stability": "stable",
   "require": {
-    "php": "^8.0"
+    "php": "^8.1"
   },
   "require-dev": {
     "fzaninotto/faker": "dev-master",
     "phpunit/phpunit": "^9.5",
-    "blackfire/php-sdk": "^1.25"
+    "blackfire/php-sdk": "^1.28"
   },
   "autoload": {
     "psr-4": {
       "PTS\\Hydrator\\": "src"
     }
+  },
+  "scripts": {
+    "test": "vendor/bin/phpunit --config=test/phpunit.xml"
   }
 }
