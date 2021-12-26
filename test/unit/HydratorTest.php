@@ -115,7 +115,7 @@ class HydratorTest extends TestCase
 
     public function testExtractViaBadSetters(): void
     {
-        $this->expectException(TypeError::class);
+        $this->expectException(Error::class);
 
         $userDto = $this->createUser();
         $rules = [

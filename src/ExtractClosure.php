@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace PTS\Hydrator;
 
 use Closure;
-use function call_user_func_array;
 use function is_array;
 
 class ExtractClosure
@@ -24,11 +23,13 @@ class ExtractClosure
                     continue;
                 }
 
-                $isArray = is_array($getter);
-                $action = $isArray ? $getter[0] : $getter;
-                $params = $isArray ? $getter[1] : [];
-
-                $dto[$name] = call_user_func_array([$model, $action], $params);
+                if (is_array($getter)) {
+                    $action = $getter[0];
+                    $params = $getter[1] ?? [];
+                    $dto[$name] = $model->$action(...$params);
+                } else {
+                    $dto[$name] = $model->$getter();
+                }
             }
 
             return $dto;

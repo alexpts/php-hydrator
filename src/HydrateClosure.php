@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace PTS\Hydrator;
 
 use Closure;
-use function call_user_func_array;
 use function is_array;
 
 class HydrateClosure
@@ -26,14 +25,13 @@ class HydrateClosure
                     continue;
                 }
 
-                $args = [$value];
-                $method = $setter;
                 if (is_array($setter)) {
                     [$method, $args] = $setter;
                     array_unshift($args, $value);
+                    $model->$method(...$args);
+                } else {
+                    $model->$setter($value);
                 }
-
-                call_user_func_array([$model, $method], $args);
             }
 
             return $model;
