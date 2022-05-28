@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 use Blackfire\Client;
 use Blackfire\Profile\Configuration;
+use Faker\Factory as Faker;
 use PTS\Hydrator\HydratorService;
 
 require_once __DIR__  .'/../vendor/autoload.php';
@@ -12,7 +13,7 @@ $iterations = $argv[1] ?? 1000;
 $blackfire = $argv[2] ?? false;
 $iterations++;
 
-$faker = \Faker\Factory::create();
+$faker = Faker::create();
 $service = new HydratorService;
 $normalizer = new \PTS\Hydrator\Normalizer;
 

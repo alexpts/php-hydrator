@@ -14,7 +14,7 @@ class Extractor extends BindClosure implements ExtractorInterface
 
     public function extract(object $model, array $rules): array
     {
-        $class = get_class($model);
+        $class = $model::class;
         $fn = $this->fnCache[$class] ?? $this->createFn($class);
         return $fn($model, $rules);
     }

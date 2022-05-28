@@ -26,7 +26,7 @@ class Hydrator extends BindClosure implements HydratorInterface
 
     public function hydrateModel(array $dto, object $model, array $rules): void
     {
-        $class = get_class($model);
+        $class = $model::class;
         $fn = $this->fnCache[$class] ?? $this->createFn($class);
         $fn($model, $dto, $rules);
     }
