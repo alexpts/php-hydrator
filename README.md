@@ -1,10 +1,7 @@
 # php-hydrator
 
-[![Build Status](https://travis-ci.org/alexpts/php-hydrator.svg?branch=master)](https://travis-ci.org/alexpts/php-hydrator)
-[![Code Coverage](https://scrutinizer-ci.com/g/alexpts/php-hydrator/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/alexpts/php-hydrator/?branch=master)
-[![Code Climate](https://codeclimate.com/github/alexpts/php-hydrator/badges/gpa.svg)](https://codeclimate.com/github/alexpts/php-hydrator)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/alexpts/php-hydrator/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/alexpts/php-hydrator/?branch=master)
-
+[![phpunit](https://github.com/alexpts/php-hydrator/actions/workflows/phpunit.yml/badge.svg?branch=master)](https://github.com/alexpts/php-hydrator/actions/workflows/phpunit.yml)
+[![codecov](https://codecov.io/gh/alexpts/php-hydrator/branch/master/graph/badge.svg?token=14L6IJA5UE)](https://codecov.io/gh/alexpts/php-hydrator)
 
 Одни и те же данные нужно представить в разном виде. В коде удобно работать с высокоуровневыми моделями. Но для сохранения этих данных в базу данных, как правило, данные требуется перевести в более простой вид, обычно в ассоциативный массив. Для передачи данных между приложениями используют простые DTO сущности.
 
