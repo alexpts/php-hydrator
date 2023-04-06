@@ -86,7 +86,7 @@ $hydrator = new Hydrator;
 $dto = [
     'id' => 1,
     'login' => 'Alex'
-    'email' => 'some@web.dev
+    'email' => 'some@web.dev'
 ];
 
 $rules = [
